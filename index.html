@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1920, height=1080, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Samsung Smart IPTV</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="icon.png">
+</head>
+<body>
+
+  <!-- TV Application Interface -->
+  <div id="app-container">
+
+    <!-- Top Header -->
+    <header class="tv-header">
+      <div class="brand-wrapper">
+        <div class="brand-icon">
+          <img src="icon.png" alt="" width="72" height="72" decoding="async">
+        </div>
+        <div>
+          <div class="brand-title">SAMSUNG SMART IPTV</div>
+          <div class="brand-subtitle" id="brand-subtitle">Live BDIX Channels</div>
+        </div>
+      </div>
+
+      <div class="header-status">
+        <div class="live-badge">
+          <span class="pulse-dot"></span>
+          <span>LIVE BROADCAST</span>
+        </div>
+        <div class="channel-count-tag" id="channel-count">Loading…</div>
+        <div class="clock-display" id="tv-clock">--:--</div>
+      </div>
+    </header>
+
+    <!-- Categories Navigation Bar -->
+    <nav class="category-bar-wrapper">
+      <div class="category-bar" id="category-bar">
+        <!-- Rendered dynamically -->
+      </div>
+    </nav>
+
+    <!-- Channels Grid Container -->
+    <main class="grid-container" id="grid-container">
+      <div class="channels-grid" id="channels-grid">
+        <!-- Channels cards rendered dynamically -->
+      </div>
+    </main>
+
+    <!-- Remote Navigation Hints Footer -->
+    <footer class="tv-footer-hints">
+      <div class="hint-item"><span class="key-pill">▲ ▼ ◀ ▶</span> Move Focus</div>
+      <div class="hint-item"><span class="key-pill">OK / ENTER</span> Play Channel</div>
+      <div class="hint-item"><span class="key-pill">0 - 9</span> Jump to Channel Number</div>
+      <div class="hint-item"><span class="key-pill key-red">RED</span> Favorite</div>
+      <div class="hint-item"><span class="key-pill">PRE-CH</span> / <span class="key-pill key-green">GREEN</span> Last Channel</div>
+      <div class="hint-item"><span class="key-pill">🎤 MIC</span> Say a Channel</div>
+      <div class="hint-item"><span class="key-pill">RETURN</span> Back / Exit</div>
+    </footer>
+
+  </div>
+
+  <!-- Fullscreen Player View -->
+  <div id="player-container">
+    <object id="av-player" type="application/avplayer"></object>
+    <video id="stream-video" class="stream-video" controls playsinline preload="auto"></video>
+    <iframe id="stream-iframe" class="stream-iframe-fallback" src="about:blank" allow="autoplay; fullscreen" allowfullscreen tabindex="-1" hidden></iframe>
+
+
+    <!-- Compact top OSD only (does not cover player controls) -->
+    <div class="player-osd hidden" id="player-osd">
+      
+      <!-- Top OSD Bar -->
+      <div class="osd-top">
+        <div class="osd-channel-info">
+          <span class="osd-ch-number" id="osd-ch-num">CH 01</span>
+          <img class="osd-ch-logo" id="osd-ch-logo" src="" alt="Channel Logo" onerror="this.style.display='none'" />
+          <div class="osd-ch-details">
+            <div class="osd-ch-name" id="osd-ch-name">A SPORTS HD</div>
+            <div class="osd-ch-meta">
+              <span id="osd-ch-cat">Sports • LIVE</span>
+              <span class="live-badge" style="padding: 2px 8px; font-size: 11px;">
+                <span class="pulse-dot" style="width:6px; height:6px;"></span> LIVE
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="osd-top-right">
+          <div class="osd-clock" id="osd-clock">--:--</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Loading / buffering / error status -->
+    <div class="player-status status-hidden" id="player-status" hidden>
+      <div class="status-spinner"></div>
+      <div class="status-error-icon">⚠</div>
+      <div class="status-text">
+        <div class="status-title" id="player-status-title"></div>
+        <div class="status-detail" id="player-status-detail"></div>
+      </div>
+      <div class="status-actions">
+        <div class="hint-item"><span class="key-pill">OK</span> Retry</div>
+        <div class="hint-item"><span class="key-pill">◀ ▶</span> Other channel</div>
+        <div class="hint-item"><span class="key-pill">RETURN</span> Back</div>
+      </div>
+    </div>
+
+    <!-- Quick channel list (OK while watching) -->
+    <aside class="channel-drawer" id="channel-drawer">
+      <div class="drawer-header">
+        <span class="drawer-arrow">◀</span>
+        <span class="drawer-category" id="drawer-category">All</span>
+        <span class="drawer-arrow">▶</span>
+      </div>
+      <div class="drawer-list" id="drawer-list"></div>
+      <div class="drawer-hints">
+        <div class="hint-item"><span class="key-pill">▲ ▼</span> Browse</div>
+        <div class="hint-item"><span class="key-pill">OK</span> Watch</div>
+        <div class="hint-item"><span class="key-pill">RETURN</span> Close</div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- Direct Channel Dial Overlay (When typing 0-9 on remote) -->
+  <div id="channel-dial-overlay">
+    <span class="dial-label">CH</span>
+    <span class="dial-digits" id="dial-digits">01</span>
+  </div>
+
+  <!-- Exit confirmation (RETURN on the category bar) -->
+  <div id="exit-dialog" class="exit-dialog" hidden>
+    <div class="exit-box">
+      <div class="exit-title">Exit Samsung Smart IPTV?</div>
+      <div class="exit-actions">
+        <span class="exit-btn">Exit</span>
+        <span class="exit-btn">Cancel</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- TV Toast Notification -->
+  <div id="tv-toast">
+    <span style="font-size: 20px;">📺</span>
+    <span id="toast-msg">Notification</span>
+  </div>
+
+  <!-- Scripts -->
+  <script src="$WEBAPIS/webapis/webapis.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/hls.js"></script>
+  <script src="channels.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

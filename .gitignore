@@ -1,0 +1,8 @@
+# Build output (regenerate with ./package_wgt.sh)
+*.wgt
+.buildResult/
+.buildOut/
+.manifest.tmp
+author-signature.xml
+signature*.xml
+.DS_Store
