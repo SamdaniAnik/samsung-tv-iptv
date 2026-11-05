@@ -1,739 +1,696 @@
-// Complete channel list extracted from http://172.20.5.50/
+// Offline fallback channel list from http://10.99.99.99/api/channels (live list and stream URLs are fetched at runtime)
 window.CHANNELS_DATA = [
   {
     "number": 1,
-    "id": "88",
-    "name": "A SPORTS HD",
-    "category": "Sports",
-    "logo": "http://172.20.5.50/assets/images/A SPORTS HD1745044782.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=88"
+    "id": "JAMUNA.TV",
+    "name": "JAMUNA TV",
+    "category": "Bangla & News",
+    "logo": "http://10.99.99.99/channel_logo/JAMUNA.TV.png"
   },
   {
     "number": 2,
-    "id": "85",
-    "name": "ALJAZEERA HD",
-    "category": "English",
-    "logo": "http://172.20.5.50/assets/images/ALJAZEETA HD1745044358.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=85"
+    "id": "NTV.HD",
+    "name": "NTV HD",
+    "category": "Bangla & News",
+    "logo": "http://10.99.99.99/channel_logo/NTV.HD.png"
   },
   {
     "number": 3,
-    "id": "35",
-    "name": "AND FLIX HD",
-    "category": "English",
-    "logo": "http://172.20.5.50/assets/images/AND FLIX HD1745040018.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=35"
+    "id": "BANGLA.VISION.HD",
+    "name": "BANGLA VISION HD",
+    "category": "Bangla & News",
+    "logo": "http://10.99.99.99/channel_logo/BANGLA.VISION.HD.png"
   },
   {
     "number": 4,
-    "id": "5",
-    "name": "AND PICTURES HD",
-    "category": "Hindi",
-    "logo": "http://172.20.5.50/assets/images/AND PICTURS HD1745031440.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=5"
+    "id": "SOMOY.TV.HD",
+    "name": "SOMOY TV HD",
+    "category": "Bangla & News",
+    "logo": "http://10.99.99.99/channel_logo/SOMOY.TV.HD.png"
   },
   {
     "number": 5,
-    "id": "41",
-    "name": "AND PRIVE HD",
-    "category": "English",
-    "logo": "http://172.20.5.50/assets/images/AND PRIVE HD1745040451.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=41"
+    "id": "CHANNEL.24.HD",
+    "name": "CHANNEL 24 HD",
+    "category": "Bangla & News",
+    "logo": "http://10.99.99.99/channel_logo/CHANNEL.24.HD.png"
   },
   {
     "number": 6,
-    "id": "61",
-    "name": "AND XPLORE",
-    "category": "English",
-    "logo": "http://172.20.5.50/assets/images/AND XPLORE1745043080.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=61"
+    "id": "BTV.HD",
+    "name": "BTV HD",
+    "category": "Bangla & News",
+    "logo": "http://10.99.99.99/channel_logo/BTV.HD.png"
   },
   {
     "number": 7,
-    "id": "26",
-    "name": "ANIMAL PLANET HD",
-    "category": "English",
-    "logo": "http://172.20.5.50/assets/images/ANIMAL PLANET HD1745038671.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=26"
+    "id": "EKATTOR.TV.HD",
+    "name": "EKATTOR TV HD",
+    "category": "Bangla & News",
+    "logo": "http://10.99.99.99/channel_logo/EKATTOR.TV.HD.png"
   },
   {
     "number": 8,
-    "id": "80",
-    "name": "ATN BANGLA",
-    "category": "Bangla",
-    "logo": "http://172.20.5.50/assets/images/ATN BANGLA1745044183.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=80"
+    "id": "BOISAKHI.TV.HD",
+    "name": "BOISAKHI TV HD",
+    "category": "Bangla & News",
+    "logo": "http://10.99.99.99/channel_logo/BOISAKHI.TV.HD.png"
   },
   {
     "number": 9,
-    "id": "95",
-    "name": "ATN NEWS",
-    "category": "Bangla",
-    "logo": "http://172.20.5.50/assets/images/ATN NEWS1745045113.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=95"
+    "id": "EAKHON.TV.HD",
+    "name": "EAKHON TV HD",
+    "category": "Bangla & News",
+    "logo": "http://10.99.99.99/channel_logo/EAKHON.TV.HD.png"
   },
   {
     "number": 10,
-    "id": "97",
-    "name": "AXN HD",
-    "category": "English",
-    "logo": "http://172.20.5.50/assets/images/AXN HD1745045171.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=97"
+    "id": "INDEPENDENT.TV",
+    "name": "INDEPENDENT TV",
+    "category": "Bangla & News",
+    "logo": "http://10.99.99.99/channel_logo/INDEPENDENT.TV.png"
   },
   {
     "number": 11,
-    "id": "50",
-    "name": "BAL BHARAT",
-    "category": "Kids",
-    "logo": "http://172.20.5.50/assets/images/BAL BHARAT1745041576.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=50"
+    "id": "GAZI.TV.HD",
+    "name": "GAZI TV HD",
+    "category": "Bangla & News",
+    "logo": "http://10.99.99.99/channel_logo/GAZI.TV.HD.png"
   },
   {
     "number": 12,
-    "id": "102",
-    "name": "BBC EARTH HD",
-    "category": "English",
-    "logo": "http://172.20.5.50/assets/images/BBC EARTH HD1745150455.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=102"
+    "id": "NAGORIK.TV.HD",
+    "name": "NAGORIK TV HD",
+    "category": "Bangla & News",
+    "logo": "http://10.99.99.99/channel_logo/NAGORIK.TV.HD.png"
   },
   {
     "number": 13,
-    "id": "55",
-    "name": "BBC NEWS",
-    "category": "English",
-    "logo": "http://172.20.5.50/assets/images/BBC NEWS1745042816.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=55"
+    "id": "ATN.BANGLA.HD",
+    "name": "ATN BANGLA HD",
+    "category": "Bangla & News",
+    "logo": "http://10.99.99.99/channel_logo/ATN.BANGLA.HD.png"
   },
   {
     "number": 14,
-    "id": "8",
-    "name": "CARTOON NETWORK",
-    "category": "Kids",
-    "logo": "http://172.20.5.50/assets/images/CARTOON NETWORK1745033414.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=8"
+    "id": "CHANNEL.I.HD",
+    "name": "CHANNEL I HD",
+    "category": "Bangla & News",
+    "logo": "http://10.99.99.99/channel_logo/CHANNEL.I.HD.png"
   },
   {
     "number": 15,
-    "id": "82",
-    "name": "CHANNEL 24",
-    "category": "Bangla",
-    "logo": "http://172.20.5.50/assets/images/CHANNEL 241745044263.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=82"
+    "id": "MASRANGA.TV.HD",
+    "name": "MASRANGA TV HD",
+    "category": "Bangla & News",
+    "logo": "http://10.99.99.99/channel_logo/MASRANGA.TV.HD.png"
   },
   {
     "number": 16,
-    "id": "81",
-    "name": "CHANNEL I",
-    "category": "Bangla",
-    "logo": "http://172.20.5.50/assets/images/CHANNEL I1745044237.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=81"
+    "id": "DEEPTOTV.HD",
+    "name": "DEEPTOTV HD",
+    "category": "Bangla & News",
+    "logo": "http://10.99.99.99/channel_logo/DEEPTOTV.HD.png"
   },
   {
     "number": 17,
-    "id": "47",
-    "name": "COLORS BANGLA CINEMA",
-    "category": "Bangla",
-    "logo": "http://172.20.5.50/assets/images/COLORS BANGLA CINEMA1745041486.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=47"
+    "id": "BIJOY.TV.HD",
+    "name": "BIJOY TV HD",
+    "category": "Bangla & News",
+    "logo": "http://10.99.99.99/channel_logo/BIJOY.TV.HD.png"
   },
   {
     "number": 18,
-    "id": "12",
-    "name": "COLORS BANGLA HD",
-    "category": "Bangla",
-    "logo": "http://172.20.5.50/assets/images/COLORS BANGLA HD1745033576.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=12"
+    "id": "ETV.BANGLA.HD",
+    "name": "ETV BANGLA HD",
+    "category": "Bangla & News",
+    "logo": "http://10.99.99.99/channel_logo/ETV.BANGLA.HD.png"
   },
   {
     "number": 19,
-    "id": "10",
-    "name": "COLORS CINEPLEX HD",
-    "category": "Hindi",
-    "logo": "http://172.20.5.50/assets/images/COLORS CINEPLEX HD1745033519.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=10"
+    "id": "BANGLA.TV.HD",
+    "name": "BANGLA TV HD",
+    "category": "Bangla & News",
+    "logo": "http://10.99.99.99/channel_logo/BANGLA.TV.HD.png"
   },
   {
     "number": 20,
-    "id": "4",
-    "name": "COLORS HD",
-    "category": "Hindi",
-    "logo": "http://172.20.5.50/assets/images/COLORS HD1745031404.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=4"
+    "id": "ZEE.BANGLA.HD",
+    "name": "ZEE BANGLA HD",
+    "category": "Bangla & News",
+    "logo": "http://10.99.99.99/channel_logo/ZEE.BANGLA.HD.png"
   },
   {
     "number": 21,
-    "id": "22",
-    "name": "DISCOVERY HD",
-    "category": "English",
-    "logo": "http://172.20.5.50/assets/images/discovery hd.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=22"
+    "id": "SUN.BANGLA.HD",
+    "name": "SUN BANGLA HD",
+    "category": "Bangla & News",
+    "logo": "http://10.99.99.99/channel_logo/SUN.BANGLA.HD.png"
   },
   {
     "number": 22,
-    "id": "68",
-    "name": "DURANTA TV",
-    "category": "Kids",
-    "logo": "http://172.20.5.50/assets/images/DURANTA TV1745043400.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=68"
+    "id": "COLORS.BANGLA.HD",
+    "name": "COLORS BANGLA HD",
+    "category": "Bangla & News",
+    "logo": "http://10.99.99.99/channel_logo/COLORS.BANGLA.HD.png"
   },
   {
     "number": 23,
-    "id": "84",
-    "name": "ENTERR 10",
-    "category": "Bangla",
-    "logo": "http://172.20.5.50/assets/images/ENTERR 101745044330.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=84"
+    "id": "STAR.JALSHA.HD",
+    "name": "STAR JALSHA HD",
+    "category": "Bangla & News",
+    "logo": "http://10.99.99.99/channel_logo/STAR.JALSHA.HD.png"
   },
   {
     "number": 24,
-    "id": "40",
-    "name": "EUROSPORT HD",
-    "category": "Sports",
-    "logo": "http://172.20.5.50/assets/images/EUROSPORTS HD1745040406.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=40"
+    "id": "ENTER10.BANGLA",
+    "name": "ENTER10 BANGLA",
+    "category": "Bangla & News",
+    "logo": "http://10.99.99.99/channel_logo/ENTER10.BANGLA.png"
   },
   {
     "number": 25,
-    "id": "87",
-    "name": "FAST SPORTS HD",
+    "id": "T-SPORTS-HD",
+    "name": "T SPORTS HD",
     "category": "Sports",
-    "logo": "http://172.20.5.50/assets/images/FAST SPORTS HD1745044750.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=87"
+    "logo": "http://10.99.99.99/channel_logo/T-SPORTS-HD.png"
   },
   {
     "number": 26,
-    "id": "90",
-    "name": "GEO NEWS HD",
-    "category": "Hindi",
-    "logo": "http://172.20.5.50/assets/images/GEO NEWS HD1745044892.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=90"
+    "id": "SONY-SPORTS.5HD",
+    "name": "SONY SPORTS 5 HD",
+    "category": "Sports",
+    "logo": "http://10.99.99.99/channel_logo/SONY-SPORTS.5HD.png"
   },
   {
     "number": 27,
-    "id": "66",
-    "name": "GOLF SPORTS",
+    "id": "STAR.SPORTS.SEL.2.HD",
+    "name": "STAR SPORTS SELECT 2 HD",
     "category": "Sports",
-    "logo": "http://172.20.5.50/assets/images/GOLF SPORTS1745043338.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=66"
+    "logo": "http://10.99.99.99/channel_logo/STAR.SPORTS.SEL.2.HD.png"
   },
   {
     "number": 28,
-    "id": "56",
-    "name": "GTV",
-    "category": "Bangla",
-    "logo": "http://172.20.5.50/assets/images/GTV1745042853.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=56"
+    "id": "PTV-SPORTS-HD",
+    "name": "PTV SPORTS HD",
+    "category": "Sports",
+    "logo": "http://10.99.99.99/channel_logo/PTV-SPORTS-HD.jpg"
   },
   {
     "number": 29,
-    "id": "98",
-    "name": "HBO HD",
-    "category": "English",
-    "logo": "http://172.20.5.50/assets/images/HBO HD1745045202.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=98"
+    "id": "STAR.SPORTS-SEL1.HD",
+    "name": "STAR SPORTS SELECT 1 HD",
+    "category": "Sports",
+    "logo": "http://10.99.99.99/channel_logo/STAR.SPORTS-SEL1.HD.png"
   },
   {
     "number": 30,
-    "id": "15",
-    "name": "HISTORY TV HD",
-    "category": "English",
-    "logo": "http://172.20.5.50/assets/images/HISTORY TV HD1745033679.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=15"
+    "id": "STAR.SPORTS2.HD",
+    "name": "STAR SPORTS 2 HD",
+    "category": "Sports",
+    "logo": "http://10.99.99.99/channel_logo/STAR.SPORTS2.HD.png"
   },
   {
     "number": 31,
-    "id": "70",
-    "name": "HITZ MUSIC",
-    "category": "English",
-    "logo": "http://172.20.5.50/assets/images/HITZ MUSIC1745043478.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=70"
+    "id": "SONY.SPORTS2.HD",
+    "name": "SONY SPORTS 2 HD",
+    "category": "Sports",
+    "logo": "http://10.99.99.99/channel_logo/SONY.SPORTS2.HD.png"
   },
   {
     "number": 32,
-    "id": "89",
-    "name": "HUM TV",
-    "category": "Hindi",
-    "logo": "http://172.20.5.50/assets/images/HUM TV1745044837.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=89"
+    "id": "SONY.SPORTS.3",
+    "name": "SONY SPORTS 3",
+    "category": "Sports",
+    "logo": "http://10.99.99.99/channel_logo/SONY.SPORTS.3.png"
   },
   {
     "number": 33,
-    "id": "49",
-    "name": "HUNGAMA",
-    "category": "Kids",
-    "logo": "http://172.20.5.50/assets/images/HUNGAMA1745041551.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=49"
+    "id": "STAR.SPORTS1.HD",
+    "name": "STAR SPORTS 1 HD",
+    "category": "Sports",
+    "logo": "http://10.99.99.99/channel_logo/STAR.SPORTS1.HD.png"
   },
   {
     "number": 34,
-    "id": "77",
-    "name": "INDEPENDENT TV",
-    "category": "Bangla",
-    "logo": "http://172.20.5.50/assets/images/INDEPENDENT TV1745044077.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=77"
+    "id": "STAR-SPORTS.3",
+    "name": "STAR SPORTS 3",
+    "category": "Sports",
+    "logo": "http://10.99.99.99/channel_logo/STAR-SPORTS.3.png"
   },
   {
     "number": 35,
-    "id": "19",
-    "name": "JALSHA MOVIES HD",
-    "category": "Bangla",
-    "logo": "http://172.20.5.50/assets/images/JALSHA MOVIES HD1745034005.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=19"
+    "id": "EUROSPORTS.HD",
+    "name": "EUROSPORT HD",
+    "category": "Sports",
+    "logo": "http://10.99.99.99/channel_logo/EUROSPORTS.HD.png"
   },
   {
     "number": 36,
-    "id": "76",
-    "name": "JAMUNA TV",
-    "category": "Bangla",
-    "logo": "http://172.20.5.50/assets/images/JAMUNA TV1745044052.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=76"
+    "id": "SONY.SPORTS.4",
+    "name": "SONY SPORTS 4",
+    "category": "Sports",
+    "logo": "http://10.99.99.99/channel_logo/SONY.SPORTS.4.png"
   },
   {
     "number": 37,
-    "id": "91",
-    "name": "LOTUS TV",
-    "category": "English",
-    "logo": "http://172.20.5.50/assets/images/LOTUS TV1745044960.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=91"
+    "id": "SONY.SPORTS.1HD",
+    "name": "SONY SPORTS 1 HD",
+    "category": "Sports",
+    "logo": "http://10.99.99.99/channel_logo/SONY.SPORTS.1HD.png"
   },
   {
     "number": 38,
-    "id": "67",
-    "name": "LOVE NATURE",
-    "category": "English",
-    "logo": "http://172.20.5.50/assets/images/LOVE NATURE1745043370.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=67"
+    "id": "FAST.SPORTS.HD",
+    "name": "FAST SPORTS HD",
+    "category": "Sports",
+    "logo": "http://10.99.99.99/channel_logo/FAST.SPORTS.HD.png"
   },
   {
     "number": 39,
-    "id": "78",
-    "name": "MAASRANGA HD",
-    "category": "Bangla",
-    "logo": "http://172.20.5.50/assets/images/MAASRANGA HD1745044117.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=78"
+    "id": "A.SPORTS.HD",
+    "name": "A SPORTS HD",
+    "category": "Sports",
+    "logo": "http://10.99.99.99/channel_logo/A.SPORTS.HD.png"
   },
   {
     "number": 40,
-    "id": "83",
-    "name": "MADANI TV HD",
-    "category": "Islamic",
-    "logo": "http://172.20.5.50/assets/images/MADANI TV HD1745044303.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=83"
+    "id": "COLORS.HD",
+    "name": "COLORS HD",
+    "category": "Entertainment",
+    "logo": "http://10.99.99.99/channel_logo/COLORS.HD.png"
   },
   {
     "number": 41,
-    "id": "36",
-    "name": "MN PLUS",
-    "category": "English",
-    "logo": "http://172.20.5.50/assets/images/MN PLUS1745040057.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=36"
+    "id": "ANT.PICTURS.HD",
+    "name": "AND PICTURES HD",
+    "category": "Entertainment",
+    "logo": "http://10.99.99.99/channel_logo/ANT.PICTURS.HD.png"
   },
   {
     "number": 42,
-    "id": "33",
-    "name": "MNX HD",
-    "category": "English",
-    "logo": "http://172.20.5.50/assets/images/MNX HD1745039955.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=33"
+    "id": "ZEE.TV.HD",
+    "name": "ZEE TV HD",
+    "category": "Entertainment",
+    "logo": "http://10.99.99.99/channel_logo/ZEE.TV.HD.png"
   },
   {
     "number": 43,
-    "id": "39",
-    "name": "MOVIES NOW HD",
-    "category": "English",
-    "logo": "http://172.20.5.50/assets/images/MOVIES NOW HD1745040368.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=39"
+    "id": "COLORS.CINEPLEX.HD",
+    "name": "COLORS CINEPLEX HD",
+    "category": "Entertainment",
+    "logo": "http://10.99.99.99/channel_logo/COLORS.CINEPLEX.HD.png"
   },
   {
     "number": 44,
-    "id": "54",
-    "name": "NAGORIK",
-    "category": "Bangla",
-    "logo": "http://172.20.5.50/assets/images/NAGORIK1745042776.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=54"
+    "id": "SONY.ENT.HD",
+    "name": "SONY ENT HD",
+    "category": "Entertainment",
+    "logo": "http://10.99.99.99/channel_logo/SONY.ENT.HD.png"
   },
   {
     "number": 45,
-    "id": "25",
-    "name": "NATGEO HD",
-    "category": "English",
-    "logo": "http://172.20.5.50/assets/images/NATGEO HD1745038634.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=25"
+    "id": "STAR.PLUS.HD",
+    "name": "STAR PLUS HD",
+    "category": "Entertainment",
+    "logo": "http://10.99.99.99/channel_logo/STAR.PLUS.HD.png"
   },
   {
     "number": 46,
-    "id": "23",
-    "name": "NATGEO WILD HD",
-    "category": "English",
-    "logo": "http://172.20.5.50/assets/images/NATGEO WILD HD1745038542.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=23"
+    "id": "MNX.HD",
+    "name": "MNX HD",
+    "category": "Entertainment",
+    "logo": "http://10.99.99.99/channel_logo/MNX.HD.png"
   },
   {
     "number": 47,
-    "id": "46",
-    "name": "NICK",
-    "category": "Kids",
-    "logo": "http://172.20.5.50/assets/images/NICK1745041451.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=46"
+    "id": "ROMEDY.NOW",
+    "name": "ROMEDY NOW",
+    "category": "Entertainment",
+    "logo": "http://10.99.99.99/channel_logo/ROMEDY.NOW.png"
   },
   {
     "number": 48,
-    "id": "51",
-    "name": "NICK JR",
-    "category": "Kids",
-    "logo": "http://172.20.5.50/assets/images/NICK JR1745042397.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=51"
+    "id": "ZEE.CAFE.HD",
+    "name": "ZEE CAFE HD",
+    "category": "Entertainment",
+    "logo": "http://10.99.99.99/channel_logo/ZEE.CAFE.HD.png"
   },
   {
     "number": 49,
-    "id": "86",
-    "name": "PEACE TV BANGLA",
-    "category": "Islamic",
-    "logo": "http://172.20.5.50/assets/images/PEACE TV BANGLA1745044480.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=86"
+    "id": "SONY.AAT",
+    "name": "SONY AAT",
+    "category": "Entertainment",
+    "logo": "http://10.99.99.99/channel_logo/SONY.AAT.png"
   },
   {
     "number": 50,
-    "id": "48",
-    "name": "POGO",
-    "category": "Kids",
-    "logo": "http://172.20.5.50/assets/images/POGO1745041515.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=48"
+    "id": "HUM.MASALA.TV",
+    "name": "HUM MASALA TV",
+    "category": "Entertainment",
+    "logo": "http://10.99.99.99/channel_logo/HUM.MASALA.TV.png"
   },
   {
     "number": 51,
-    "id": "92",
-    "name": "PTV SPORTS HD",
-    "category": "Sports",
-    "logo": "http://172.20.5.50/assets/images/PTV SPORTS HD1745044993.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=92"
+    "id": "Lotus.TV.HD",
+    "name": "Lotus TV HD",
+    "category": "Entertainment",
+    "logo": "http://10.99.99.99/channel_logo/Lotus.TV.HD.png"
   },
   {
     "number": 52,
-    "id": "34",
-    "name": "ROMEDY NOW",
-    "category": "English",
-    "logo": "http://172.20.5.50/assets/images/ROMEDY NOW1745039988.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=34"
+    "id": "AXN.HD",
+    "name": "AXN HD",
+    "category": "Entertainment",
+    "logo": "http://10.99.99.99/channel_logo/AXN.HD.png"
   },
   {
     "number": 53,
-    "id": "79",
-    "name": "SOMOY TV",
-    "category": "Bangla",
-    "logo": "http://172.20.5.50/assets/images/SOMOY TV1745044149.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=79"
+    "id": "STAR.BHARAT.HD",
+    "name": "STAR BHARAT HD",
+    "category": "Entertainment",
+    "logo": "http://10.99.99.99/channel_logo/STAR.BHARAT.HD.png"
   },
   {
     "number": 54,
-    "id": "45",
-    "name": "SONIC",
-    "category": "Kids",
-    "logo": "http://172.20.5.50/assets/images/SONIC1745041154.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=45"
+    "id": "ZEE.CINEMA.HD",
+    "name": "ZEE CINEMA HD",
+    "category": "Movies",
+    "logo": "http://10.99.99.99/channel_logo/ZEE.CINEMA.HD.png"
   },
   {
     "number": 55,
-    "id": "44",
-    "name": "SONY AAT",
-    "category": "Bangla",
-    "logo": "http://172.20.5.50/assets/images/SONY AAT1745041124.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=44"
+    "id": "JALSHA.MOVIES.HD",
+    "name": "JALSHA MOVIES HD",
+    "category": "Movies",
+    "logo": "http://10.99.99.99/channel_logo/JALSHA.MOVIES.HD.png"
   },
   {
     "number": 56,
-    "id": "6",
-    "name": "SONY BBC EARTH HD",
-    "category": "English",
-    "logo": "http://172.20.5.50/assets/images/SONY BBC EARTH HD1745031522.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=6"
+    "id": "STAR.GOLD.HD",
+    "name": "STAR GOLD HD",
+    "category": "Movies",
+    "logo": "http://10.99.99.99/channel_logo/STAR.GOLD.HD.png"
   },
   {
     "number": 57,
-    "id": "11",
-    "name": "SONY ENT HD",
-    "category": "Hindi",
-    "logo": "http://172.20.5.50/assets/images/SONY ENT HD1745033553.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=11"
+    "id": "SONY.MAX.HD",
+    "name": "SONY MAX HD",
+    "category": "Movies",
+    "logo": "http://10.99.99.99/channel_logo/SONY.MAX.HD.png"
   },
   {
     "number": 58,
-    "id": "21",
-    "name": "SONY MAX HD",
-    "category": "Hindi",
-    "logo": "http://172.20.5.50/assets/images/SONY MAX HD1745034069.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=21"
+    "id": "STAR.MOVIES.SEL.HD",
+    "name": "STAR MOVIES SEL HD",
+    "category": "Movies",
+    "logo": "http://10.99.99.99/channel_logo/STAR.MOVIES.SEL.HD.png"
   },
   {
     "number": 59,
-    "id": "32",
+    "id": "SONY.PIX.HD",
     "name": "SONY PIX HD",
-    "category": "English",
-    "logo": "http://172.20.5.50/assets/images/SONY PIX HD1745039925.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=32"
+    "category": "Movies",
+    "logo": "http://10.99.99.99/channel_logo/SONY.PIX.HD.png"
   },
   {
     "number": 60,
-    "id": "74",
-    "name": "SONY SPORTS 1 HD",
-    "category": "Sports",
-    "logo": "http://172.20.5.50/assets/images/sony sports 1 hd.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=74"
+    "id": "AND.FLIX.HD",
+    "name": "AND FLIX HD",
+    "category": "Movies",
+    "logo": "http://10.99.99.99/channel_logo/AND.FLIX.HD.png"
   },
   {
     "number": 61,
-    "id": "29",
-    "name": "SONY SPORTS 2 HD",
-    "category": "Sports",
-    "logo": "http://172.20.5.50/assets/images/sony sports 2 hd.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=29"
+    "id": "STAR.MOVIES.HD",
+    "name": "STAR MOVIES HD",
+    "category": "Movies",
+    "logo": "http://10.99.99.99/channel_logo/STAR.MOVIES.HD.png"
   },
   {
     "number": 62,
-    "id": "30",
-    "name": "SONY SPORTS 3",
-    "category": "Sports",
-    "logo": "http://172.20.5.50/assets/images/Sony sports 3.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=30"
+    "id": "MOVIES.NOW.HD",
+    "name": "MOVIES NOW HD",
+    "category": "Movies",
+    "logo": "http://10.99.99.99/channel_logo/MOVIES.NOW.HD.png"
   },
   {
     "number": 63,
-    "id": "72",
-    "name": "SONY SPORTS 4",
-    "category": "Sports",
-    "logo": "http://172.20.5.50/assets/images/sony sports 4.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=72"
+    "id": "AND.PRIVE.HD",
+    "name": "AND PRIVE HD",
+    "category": "Movies",
+    "logo": "http://10.99.99.99/channel_logo/AND.PRIVE.HD.png"
   },
   {
     "number": 64,
-    "id": "101",
-    "name": "SONY SPORTS 5 HD",
-    "category": "Sports",
-    "logo": "http://172.20.5.50/assets/images/sony sports 5 hd.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=101"
+    "id": "ZEE.BANGLA.CINEMA",
+    "name": "ZEE BANGLA CINEMA",
+    "category": "Movies",
+    "logo": "http://10.99.99.99/channel_logo/ZEE.BANGLA.CINEMA.png"
   },
   {
     "number": 65,
-    "id": "93",
-    "name": "SONY YAY",
-    "category": "Kids",
-    "logo": "http://172.20.5.50/assets/images/SONY YAY1745045046.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=93"
+    "id": "COLORS.BANGLA.CINEMA",
+    "name": "COLORS BANGLA CINEMA",
+    "category": "Movies",
+    "logo": "http://10.99.99.99/channel_logo/COLORS.BANGLA.CINEMA.png"
   },
   {
     "number": 66,
-    "id": "96",
-    "name": "SSC SPORTS",
-    "category": "Sports",
-    "logo": "http://172.20.5.50/assets/images/ssc 1 hd.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=96"
+    "id": "STAR.GOLD.SEL.HD",
+    "name": "STAR GOLD SEL HD",
+    "category": "Movies",
+    "logo": "http://10.99.99.99/channel_logo/STAR.GOLD.SEL.HD.png"
   },
   {
     "number": 67,
-    "id": "103",
-    "name": "SSC SPORTS 5 HD",
-    "category": "Sports",
-    "logo": "http://172.20.5.50/assets/images/ssc 5 hd.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=103"
+    "id": "STAR.GOLD.2HD",
+    "name": "STAR GOLD 2 HD",
+    "category": "Movies",
+    "logo": "http://10.99.99.99/channel_logo/STAR.GOLD.2HD.png"
   },
   {
     "number": 68,
-    "id": "100",
-    "name": "STAR BHARAT HD",
-    "category": "Hindi",
-    "logo": "http://172.20.5.50/assets/images/STAR BHARAT HD1745045255.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=100"
+    "id": "MN.PLUS.HD",
+    "name": "MN PLUS HD",
+    "category": "Movies",
+    "logo": "http://10.99.99.99/channel_logo/mn-plus.png"
   },
   {
     "number": 69,
-    "id": "69",
-    "name": "STAR GOLD 2 HD",
-    "category": "Hindi",
-    "logo": "http://172.20.5.50/assets/images/STAR GOLD 2 HD1745043441.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=69"
+    "id": "DBC.NEWS.HD",
+    "name": "DBC NEWS HD",
+    "category": "Bangla & News",
+    "logo": "http://10.99.99.99/channel_logo/DBC.NEWS.HD.png"
   },
   {
     "number": 70,
-    "id": "20",
-    "name": "STAR GOLD HD",
-    "category": "Hindi",
-    "logo": "http://172.20.5.50/assets/images/STAR GOLD HD1745034037.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=20"
+    "id": "BBC.NEWS",
+    "name": "BBC NEWS",
+    "category": "Bangla & News",
+    "logo": "http://10.99.99.99/channel_logo/BBC.NEWS.png"
   },
   {
     "number": 71,
-    "id": "71",
-    "name": "STAR GOLD SELECT HD",
-    "category": "Hindi",
-    "logo": "http://172.20.5.50/assets/images/STAR GOLD SELECT HD1745043508.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=71"
+    "id": "ALJAZEERA.HD",
+    "name": "ALJAZEERA HD",
+    "category": "Bangla & News",
+    "logo": "http://10.99.99.99/channel_logo/ALJAZEERA.HD.png"
   },
   {
     "number": 72,
-    "id": "18",
-    "name": "STAR JALSHA HD",
-    "category": "Bangla",
-    "logo": "http://172.20.5.50/assets/images/STAR JALSHA HD1745033819.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=18"
+    "id": "GEO.NEWS.HD",
+    "name": "GEO NEWS HD",
+    "category": "Bangla & News",
+    "logo": "http://10.99.99.99/channel_logo/GEO.NEWS.HD.png"
   },
   {
     "number": 73,
-    "id": "38",
-    "name": "STAR MOVIES HD",
-    "category": "English",
-    "logo": "http://172.20.5.50/assets/images/STAR MOVIES HD1745040174.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=38"
+    "id": "ATN.NEWS.HD",
+    "name": "ATN NEWS HD",
+    "category": "Bangla & News",
+    "logo": "http://10.99.99.99/channel_logo/ATN.NEWS.HD.png"
   },
   {
     "number": 74,
-    "id": "27",
-    "name": "STAR MOVIES SELECT HD",
-    "category": "English",
-    "logo": "http://172.20.5.50/assets/images/STAR MOVIES SELECT HD1745038723.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=27"
+    "id": "DW.NEWS.HD",
+    "name": "DW NEWS HD",
+    "category": "Bangla & News",
+    "logo": "http://10.99.99.99/channel_logo/DW.NEWS.HD.png"
   },
   {
     "number": 75,
-    "id": "24",
-    "name": "STAR PLUS HD",
-    "category": "Hindi",
-    "logo": "http://172.20.5.50/assets/images/STAR PLUS HD1745038577.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=24"
+    "id": "DISCOVERY.HD",
+    "name": "DISCOVERY HD",
+    "category": "Documentary",
+    "logo": "http://10.99.99.99/channel_logo/DISCOVERY.HD.png"
   },
   {
     "number": 76,
-    "id": "28",
-    "name": "STAR SELECT 1 HD",
-    "category": "Sports",
-    "logo": "http://172.20.5.50/assets/images/STAR SELECT 1 HD1745038777.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=28"
+    "id": "SONY.BBC.EARTH.HD",
+    "name": "SONY BBC EARTH HD",
+    "category": "Documentary",
+    "logo": "http://10.99.99.99/channel_logo/SONY.BBC.EARTH.HD.png"
   },
   {
     "number": 77,
-    "id": "2",
-    "name": "STAR SPORTS 1 HD",
-    "category": "Sports",
-    "logo": "http://172.20.5.50/assets/images/STAR SPORTS 1 HD1744991778.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=2"
+    "id": "TLC.HD",
+    "name": "TLC HD",
+    "category": "Documentary",
+    "logo": "http://10.99.99.99/channel_logo/TLC.HD.png"
   },
   {
     "number": 78,
-    "id": "3",
-    "name": "STAR SPORTS 2 HD",
-    "category": "Sports",
-    "logo": "http://172.20.5.50/assets/images/STAR SPORTS 2 HD1744991842.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=3"
+    "id": "HISTORY.TV.18.HD",
+    "name": "HISTORY TV 18 HD",
+    "category": "Documentary",
+    "logo": "http://10.99.99.99/channel_logo/HISTORY.TV.18.HD.png"
   },
   {
     "number": 79,
-    "id": "31",
-    "name": "STAR SPORTS 3",
-    "category": "Sports",
-    "logo": "http://172.20.5.50/assets/images/STAR SPORTS 31745039893.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=31"
+    "id": "NATGEO.WILD.HD",
+    "name": "NATGEO WILD HD",
+    "category": "Documentary",
+    "logo": "http://10.99.99.99/channel_logo/NATGEO.WILD.HD.png"
   },
   {
     "number": 80,
-    "id": "16",
-    "name": "STAR SPORTS SELECT 2 HD",
-    "category": "Sports",
-    "logo": "http://172.20.5.50/assets/images/STAR SPORTS SELECT 2 HD1745033722.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=16"
+    "id": "NATGEO.HD",
+    "name": "NATGEO HD",
+    "category": "Documentary",
+    "logo": "http://10.99.99.99/channel_logo/NATGEO.HD.png"
   },
   {
     "number": 81,
-    "id": "17",
-    "name": "SUN BANGLA HD",
-    "category": "Bangla",
-    "logo": "http://172.20.5.50/assets/images/SUN BANGLA HD1745033791.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=17"
+    "id": "ANIMAL.PLANET.HD",
+    "name": "ANIMAL PLANET HD",
+    "category": "Documentary",
+    "logo": "http://10.99.99.99/channel_logo/ANIMAL.PLANET.HD.png"
   },
   {
     "number": 82,
-    "id": "75",
-    "name": "SUPER HUNGAMA",
-    "category": "Kids",
-    "logo": "http://172.20.5.50/assets/images/SUPER HUNGAMA1745044022.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=75"
+    "id": "XPLOR.HD",
+    "name": "XPLOR HD",
+    "category": "Documentary",
+    "logo": "http://10.99.99.99/channel_logo/XPLOR.HD.png"
   },
   {
     "number": 83,
-    "id": "1",
-    "name": "T SPORTS",
-    "category": "Sports",
-    "logo": "http://172.20.5.50/assets/images/T SPORTS1744972630.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=1"
+    "id": "TRAVELXP.HD",
+    "name": "TRAVELXP HD",
+    "category": "Documentary",
+    "logo": "http://10.99.99.99/channel_logo/TRAVELXP.HD.png"
   },
   {
     "number": 84,
-    "id": "9",
-    "name": "TLC HD",
-    "category": "English",
-    "logo": "http://172.20.5.50/assets/images/TLC HD1745033484.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=9"
+    "id": "BBC.Earth.HD",
+    "name": "BBC Earth HD",
+    "category": "Documentary",
+    "logo": "http://10.99.99.99/channel_logo/BBC.Earth.HD.png"
   },
   {
     "number": 85,
-    "id": "62",
-    "name": "TRAVEL XP",
-    "category": "English",
-    "logo": "http://172.20.5.50/assets/images/TRAVEL XP1745043118.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=62"
+    "id": "LOVE.NATURE.HD",
+    "name": "LOVE NATURE HD",
+    "category": "Documentary",
+    "logo": "http://10.99.99.99/channel_logo/LOVE.NATURE.HD.png"
   },
   {
     "number": 86,
-    "id": "43",
-    "name": "ZEE BANGLA CINEMA",
-    "category": "Bangla",
-    "logo": "http://172.20.5.50/assets/images/ZEE BANGLA CINEMA1745040996.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=43"
+    "id": "DURANTA.TV.HD",
+    "name": "DURANTA TV HD",
+    "category": "Kids",
+    "logo": "http://10.99.99.99/channel_logo/DURANTA.TV.HD.png"
   },
   {
     "number": 87,
-    "id": "14",
-    "name": "ZEE BANGLA HD",
-    "category": "Bangla",
-    "logo": "http://172.20.5.50/assets/images/ZEE BANGLA HD1745033633.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=14"
+    "id": "CARTON.NETWORK.HD",
+    "name": "CARTOON NETWORK HD",
+    "category": "Kids",
+    "logo": "http://10.99.99.99/channel_logo/CARTON.NETWORK.HD.png"
   },
   {
     "number": 88,
-    "id": "37",
-    "name": "ZEE CAFE HD",
-    "category": "English",
-    "logo": "http://172.20.5.50/assets/images/ZEE CAFE HD1745040102.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=37"
+    "id": "SONIC",
+    "name": "SONIC",
+    "category": "Kids",
+    "logo": "http://10.99.99.99/channel_logo/SONIC.png"
   },
   {
     "number": 89,
-    "id": "13",
-    "name": "ZEE CINEMA HD",
-    "category": "Hindi",
-    "logo": "http://172.20.5.50/assets/images/ZEE CINEMA HD1745033602.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=13"
+    "id": "NICK",
+    "name": "NICK",
+    "category": "Kids",
+    "logo": "http://10.99.99.99/channel_logo/NICK.png"
   },
   {
     "number": 90,
-    "id": "7",
-    "name": "ZEE TV HD",
-    "category": "Hindi",
-    "logo": "http://172.20.5.50/assets/images/ZEE TV HD1745033383.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=7"
+    "id": "POGO",
+    "name": "POGO",
+    "category": "Kids",
+    "logo": "http://10.99.99.99/channel_logo/POGO.png"
   },
   {
     "number": 91,
-    "id": "53",
-    "name": "ZING",
-    "category": "Hindi",
-    "logo": "http://172.20.5.50/assets/images/ZING1745042718.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=53"
+    "id": "HUNGAMA",
+    "name": "HUNGAMA",
+    "category": "Kids",
+    "logo": "http://10.99.99.99/channel_logo/HUNGAMA.png"
   },
   {
     "number": 92,
-    "id": "42",
-    "name": "ZOOM",
-    "category": "Hindi",
-    "logo": "http://172.20.5.50/assets/images/ZOOM1745040961.png",
-    "playerUrl": "http://172.20.5.50/player.php?stream=42"
+    "id": "ETV.BAL.BHARAT",
+    "name": "ETV BAL BHARAT",
+    "category": "Kids",
+    "logo": "http://10.99.99.99/channel_logo/ETV.BAL.BHARAT.png"
+  },
+  {
+    "number": 93,
+    "id": "NICK.JR",
+    "name": "NICK JR",
+    "category": "Kids",
+    "logo": "http://10.99.99.99/channel_logo/NICK.JR.png"
+  },
+  {
+    "number": 94,
+    "id": "SUPER.HUNGAMA",
+    "name": "SUPER HUNGAMA",
+    "category": "Kids",
+    "logo": "http://10.99.99.99/channel_logo/SUPER.HUNGAMA.png"
+  },
+  {
+    "number": 95,
+    "id": "SONY.YAY",
+    "name": "SONY YAY",
+    "category": "Kids",
+    "logo": "http://10.99.99.99/channel_logo/SONY.YAY.png"
+  },
+  {
+    "number": 96,
+    "id": "ZOOM.MUSIC",
+    "name": "ZOOM MUSIC",
+    "category": "Music",
+    "logo": "http://10.99.99.99/channel_logo/ZOOM.MUSIC.png"
+  },
+  {
+    "number": 97,
+    "id": "ZING.MUSIC",
+    "name": "ZING MUSIC",
+    "category": "Music",
+    "logo": "http://10.99.99.99/channel_logo/ZING.MUSIC.png"
+  },
+  {
+    "number": 98,
+    "id": "PEACE.TV.BANGLA.HD",
+    "name": "PEACE TV BANGLA HD",
+    "category": "Religious",
+    "logo": "http://10.99.99.99/channel_logo/PEACE.TV.BANGLA.HD.png"
+  },
+  {
+    "number": 99,
+    "id": "MADANI.TV.HD",
+    "name": "MADANI TV HD",
+    "category": "Religious",
+    "logo": "http://10.99.99.99/channel_logo/MADANI.TV.HD.png"
   }
 ];

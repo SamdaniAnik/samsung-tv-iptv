@@ -1,15 +1,16 @@
 <?php
-// Browser-side helper for the IPTV app: scrapes the channel list and stream URLs from the IPTV server.
-// The TV app (.wgt) talks to the server directly and does not need this file.
+// Browser-side helper for the IPTV app: relays the IPTV server's channel list (with signed stream URLs),
+// because the server sends no CORS headers. The TV app (.wgt) talks to the server directly.
 
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 header('Content-Type: application/json; charset=UTF-8');
+header('Cache-Control: no-store');
 
-const IPTV_BASE_URL = 'http://172.20.5.50';
-const CHANNEL_CACHE_TTL = 600; // seconds
-const UPSTREAM_TIMEOUT = 4;    // seconds
+const IPTV_BASE_URL = 'http://10.99.99.99';
+const CHANNEL_CACHE_TTL = 300; // seconds; stream tokens last ~3 h, so a short cache is safe
+const UPSTREAM_TIMEOUT = 5;    // seconds
 
 $action = isset($_GET['action']) ? $_GET['action'] : '';
 
@@ -27,7 +28,7 @@ function upstream_get($url)
 
 function cache_file()
 {
-    return sys_get_temp_dir() . '/samsung-tv-iptv-channels.json';
+    return sys_get_temp_dir() . '/samsung-tv-iptv-channels-v2.json';
 }
 
 function bundled_channels()
@@ -43,60 +44,30 @@ function bundled_channels()
     return [];
 }
 
-// Channel numbers follow the stream id from channels.js, so a new channel never shifts existing numbers.
-function number_map()
+function fetch_upstream_channels()
 {
-    $map = [];
-    foreach (bundled_channels() as $c) {
-        if (isset($c['id'], $c['number'])) {
-            $map[(string) $c['id']] = (int) $c['number'];
-        }
+    $body = upstream_get(IPTV_BASE_URL . '/api/channels');
+    $list = $body ? json_decode($body, true) : null;
+    if (!is_array($list)) {
+        return [];
     }
-    return $map;
-}
-
-function scrape_channels($html)
-{
-    $marker = strpos($html, 'id="vidlink"');
-    $part = $marker === false ? $html : substr($html, $marker);
-    preg_match_all('/<li class="([^"]+)">\s*<a[^>]*stream=(\d+)[^>]*>([\s\S]*?)<\/li>/', $part, $matches, PREG_SET_ORDER);
-
-    $numbers = number_map();
-    $next = $numbers ? max($numbers) + 1 : 1;
     $channels = [];
-    $seen = [];
-
-    foreach ($matches as $m) {
-        $streamId = $m[2];
-        if (isset($seen[$streamId])) {
+    foreach ($list as $c) {
+        if (!is_array($c) || !isset($c['id'])) {
             continue;
         }
-        $seen[$streamId] = true;
-
-        preg_match('/src="([^"]+)"/', $m[3], $imgMatch);
-        preg_match('/alt="([^"]*)"/', $m[3], $altMatch);
-        $imgSrc = isset($imgMatch[1]) ? html_entity_decode($imgMatch[1], ENT_QUOTES) : '';
-        $name = isset($altMatch[1]) && trim($altMatch[1]) !== ''
-            ? html_entity_decode(trim($altMatch[1]), ENT_QUOTES)
-            : "Channel $streamId";
-
-        $categories = array_values(array_filter(preg_split('/\s+/', $m[1]), function ($c) {
-            return $c !== '' && !in_array($c, ['All', 'channel', 'nav-item'], true);
-        }));
-
+        $logo = isset($c['logo']) ? (string) $c['logo'] : '';
+        if ($logo !== '' && !preg_match('#^https?://#', $logo)) {
+            $logo = IPTV_BASE_URL . '/' . ltrim($logo, '/');
+        }
         $channels[] = [
-            'number' => isset($numbers[$streamId]) ? $numbers[$streamId] : $next++,
-            'id' => $streamId,
-            'name' => $name,
-            'category' => $categories ? $categories[0] : 'General',
-            'logo' => preg_match('#^https?://#', $imgSrc) ? $imgSrc : IPTV_BASE_URL . '/' . ltrim($imgSrc, '/'),
-            'playerUrl' => IPTV_BASE_URL . "/player.php?stream=$streamId",
+            'id' => (string) $c['id'],
+            'name' => isset($c['name']) ? $c['name'] : (string) $c['id'],
+            'category' => isset($c['category']) ? $c['category'] : 'General',
+            'logo' => $logo,
+            'url' => isset($c['url']) ? $c['url'] : null,
         ];
     }
-
-    usort($channels, function ($a, $b) {
-        return $a['number'] - $b['number'];
-    });
     return $channels;
 }
 
@@ -110,8 +81,7 @@ function load_channels()
         }
     }
 
-    $html = upstream_get(IPTV_BASE_URL . '/');
-    $channels = $html ? scrape_channels($html) : [];
+    $channels = fetch_upstream_channels();
     if ($channels) {
         @file_put_contents($cache, json_encode($channels), LOCK_EX);
         return $channels;
@@ -135,25 +105,6 @@ if ($action === 'channels') {
         exit;
     }
     echo json_encode($channels);
-    exit;
-}
-
-if ($action === 'stream') {
-    $id = isset($_GET['id']) ? preg_replace('/[^0-9]/', '', $_GET['id']) : '';
-    if ($id === '') {
-        http_response_code(400);
-        echo json_encode(['error' => 'Missing channel id']);
-        exit;
-    }
-
-    $playerUrl = IPTV_BASE_URL . "/player.php?stream=$id";
-    $playerHtml = upstream_get($playerUrl);
-    $m3u8 = null;
-    if ($playerHtml && preg_match("/primarySource\s*=\s*'([^']+)'/", $playerHtml, $sm)) {
-        $m3u8 = $sm[1];
-    }
-
-    echo json_encode(['id' => $id, 'm3u8' => $m3u8, 'playerUrl' => $playerUrl]);
     exit;
 }
 

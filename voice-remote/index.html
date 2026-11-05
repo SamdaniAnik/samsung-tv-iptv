@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b0f1e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>TV Voice Remote</title>
+<style>
+  :root {
+    --bg: #0b0f1e; --card: #151b33; --card2: #1d2545; --line: #2a3360;
+    --text: #eef1ff; --muted: #8b93c2; --accent: #6c7bff; --ok: #3ddc84; --bad: #ff6b6b;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; background: var(--bg); color: var(--text);
+    font-family: -apple-system, system-ui, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 480px; margin: 0 auto; padding: 16px 16px calc(24px + env(safe-area-inset-bottom)); }
+  header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+  h1 { font-size: 20px; margin: 0; }
+  .pill { font-size: 13px; padding: 5px 11px; border-radius: 99px; background: var(--card); color: var(--muted);
+    display: flex; align-items: center; gap: 7px; }
+  .pill i { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); }
+  .pill.on { color: var(--text); } .pill.on i { background: var(--ok); }
+  .pill.off i { background: var(--bad); }
+
+  .mic-wrap { display: flex; flex-direction: column; align-items: center; gap: 10px; margin: 10px 0 20px; }
+  #mic { width: 132px; height: 132px; border-radius: 50%; border: 0; cursor: pointer;
+    background: radial-gradient(circle at 35% 30%, #8b97ff, var(--accent) 60%, #4a55d6);
+    color: #fff; font-size: 54px; box-shadow: 0 10px 40px rgba(108,123,255,.35); transition: transform .15s; }
+  #mic:active { transform: scale(.96); }
+  #mic.listening { animation: pulse 1.1s infinite; background: radial-gradient(circle at 35% 30%, #ff9b9b, #ff5c5c 60%, #d63c3c); }
+  @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(255,92,92,.55); } 100% { box-shadow: 0 0 0 28px rgba(255,92,92,0); } }
+  #mic-hint { color: var(--muted); font-size: 14px; text-align: center; min-height: 20px; }
+
+  form { display: flex; gap: 8px; }
+  input { flex: 1; min-width: 0; font-size: 17px; padding: 14px; border-radius: 12px; border: 1px solid var(--line);
+    background: var(--card); color: var(--text); outline: none; }
+  input:focus { border-color: var(--accent); }
+  button.send { border: 0; border-radius: 12px; padding: 0 18px; background: var(--accent); color: #fff; font-size: 16px; font-weight: 600; }
+  .tip { color: var(--muted); font-size: 13px; margin: 8px 2px 0; }
+
+  #result { margin: 16px 0; padding: 14px; border-radius: 12px; background: var(--card); min-height: 50px;
+    font-size: 15px; display: none; }
+  #result.show { display: block; } #result.ok { border-left: 4px solid var(--ok); } #result.bad { border-left: 4px solid var(--bad); }
+  #result small { display: block; color: var(--muted); margin-bottom: 4px; }
+
+  h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 22px 2px 10px; }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .grid button, .chips button { border: 1px solid var(--line); background: var(--card); color: var(--text);
+    border-radius: 12px; padding: 14px 6px; font-size: 15px; cursor: pointer; }
+  .grid button:active, .chips button:active { background: var(--card2); }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chips button { padding: 10px 14px; font-size: 14px; }
+  .examples { color: var(--muted); font-size: 14px; line-height: 1.6; margin: 0 2px; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>📺 TV Voice Remote</h1>
+    <span id="tv" class="pill"><i></i><span>Checking TV…</span></span>
+  </header>
+
+  <div class="mic-wrap">
+    <button id="mic" type="button" aria-label="Speak a command">🎤</button>
+    <div id="mic-hint">Tap and say a channel name</div>
+  </div>
+
+  <form id="form" autocomplete="off">
+    <input id="text" type="text" placeholder="e.g. Somoy TV, channel 12, sports" enterkeyhint="send">
+    <button class="send" type="submit">Send</button>
+  </form>
+  <p class="tip" id="tip">Tip: tap the box, then the 🎤 on your phone keyboard to dictate.</p>
+
+  <div id="result"></div>
+
+  <h2>Quick controls</h2>
+  <div class="grid">
+    <button data-cmd="channel down">◀ CH−</button>
+    <button data-cmd="previous channel">↩ Last</button>
+    <button data-cmd="next channel">CH+ ▶</button>
+    <button data-cmd="pause">⏸ Pause</button>
+    <button data-cmd="play">▶ Play</button>
+    <button data-cmd="stop">⏹ Stop</button>
+  </div>
+
+  <h2>Categories</h2>
+  <div class="chips">
+    <button data-cmd="bangla">Bangla &amp; News</button>
+    <button data-cmd="favorites">★ Favorites</button>
+    <button data-cmd="sports">Sports</button>
+    <button data-cmd="movies">Movies</button>
+    <button data-cmd="entertainment">Entertainment</button>
+    <button data-cmd="documentary">Documentary</button>
+    <button data-cmd="kids">Kids</button>
+    <button data-cmd="music">Music</button>
+    <button data-cmd="religious">Religious</button>
+  </div>
+
+  <h2>Recent</h2>
+  <div class="chips" id="recent"></div>
+
+  <h2>Things you can say</h2>
+  <p class="examples">
+    “Somoy TV” · “Jamuna” · “T Sports” · “Star Jalsha”<br>
+    “Channel 12” · “Number 5” · “Next channel” · “Previous channel”<br>
+    “Sports” · “Movies” · “Kids” · “Favorites”<br>
+    “Add to favorites” · “Remove from favorites” · “Pause” · “Stop”
+  </p>
+</main>
+
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var tvPill = $('tv'), mic = $('mic'), hint = $('mic-hint'), input = $('text'), resultBox = $('result');
+  var RECENT_KEY = 'voiceRemote.recent';
+  var Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  var recognizer = null;
+  var waitTimer = null;
+
+  function store(key, value) {
+    try {
+      if (value === undefined) return JSON.parse(localStorage.getItem(key) || 'null');
+      localStorage.setItem(key, JSON.stringify(value));
+    } catch (e) { return null; }
+  }
+
+  function setTv(online) {
+    tvPill.className = 'pill ' + (online ? 'on' : 'off');
+    tvPill.lastChild.textContent = online ? 'TV connected' : 'TV not connected';
+  }
+
+  function showResult(kind, title, msg) {
+    resultBox.className = 'show ' + (kind || '');
+    resultBox.innerHTML = '';
+    var s = document.createElement('small'); s.textContent = title;
+    var d = document.createElement('div'); d.textContent = msg;
+    resultBox.appendChild(s); resultBox.appendChild(d);
+  }
+
+  function api(path, body) {
+    return fetch(path, body ? {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
+    } : { cache: 'no-store' }).then(function (r) { return r.json(); });
+  }
+
+  function remember(text) {
+    var list = (store(RECENT_KEY) || []).filter(function (t) { return t.toLowerCase() !== text.toLowerCase(); });
+    list.unshift(text);
+    store(RECENT_KEY, list.slice(0, 8));
+    renderRecent();
+  }
+
+  function renderRecent() {
+    var box = $('recent');
+    box.innerHTML = '';
+    (store(RECENT_KEY) || []).forEach(function (t) {
+      var b = document.createElement('button');
+      b.textContent = t;
+      b.onclick = function () { send(t); };
+      box.appendChild(b);
+    });
+    if (!box.children.length) box.innerHTML = '<span class="examples">Nothing yet</span>';
+  }
+
+  // Wait up to ~8 s for the TV to report what it did with command `id`.
+  function waitForResult(id, text, tries) {
+    clearTimeout(waitTimer);
+    if (tries > 16) {
+      showResult('bad', '“' + text + '”', 'The TV did not answer. Is the IPTV app open on the TV?');
+      return;
+    }
+    waitTimer = setTimeout(function () {
+      api('/api/status?id=' + id).then(function (s) {
+        setTv(s.tvOnline);
+        if (s.result) {
+          showResult(s.result.ok ? 'ok' : 'bad', '“' + text + '”', (s.result.ok ? '✓ ' : '✗ ') + s.result.message);
+        } else {
+          waitForResult(id, text, tries + 1);
+        }
+      }, function () { waitForResult(id, text, tries + 1); });
+    }, 500);
+  }
+
+  function send(text, alternatives) {
+    text = String(text || '').trim();
+    if (!text) return;
+    showResult('', '“' + text + '”', 'Sending to TV…');
+    api('/api/command', { text: text, alternatives: alternatives || [] }).then(function (r) {
+      if (!r || !r.id) { showResult('bad', '“' + text + '”', (r && r.error) || 'Could not send'); return; }
+      setTv(r.tvOnline);
+      remember(text);
+      if (!r.tvOnline) showResult('bad', '“' + text + '”', 'Sent, but the TV is not connected. Open Samsung Smart IPTV on the TV.');
+      waitForResult(r.id, text, 0);
+    }, function () {
+      showResult('bad', '“' + text + '”', 'Cannot reach the Mac. Is the voice remote server running?');
+    });
+  }
+
+  function micUnavailable(reason) {
+    mic.disabled = true;
+    mic.style.opacity = .45;
+    hint.textContent = reason;
+    $('tip').textContent = 'Tap the box above, then the 🎤 on your phone keyboard, and press Send.';
+  }
+
+  function startListening() {
+    if (recognizer) { recognizer.abort(); return; }
+    var rec = new Recognition();
+    rec.lang = 'en-IN';
+    rec.interimResults = true;
+    rec.maxAlternatives = 3;
+    var finalSent = false;
+    rec.onresult = function (e) {
+      var res = e.results[e.results.length - 1];
+      input.value = res[0].transcript;
+      if (res.isFinal && !finalSent) {
+        finalSent = true;
+        var alts = [];
+        for (var i = 1; i < res.length; i++) alts.push(res[i].transcript);
+        send(res[0].transcript, alts);
+      }
+    };
+    rec.onerror = function (e) {
+      if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
+        micUnavailable('Microphone blocked on this page — use keyboard dictation below.');
+      } else if (e.error === 'no-speech') {
+        hint.textContent = 'Didn’t hear anything — tap and try again';
+      } else if (e.error !== 'aborted') {
+        hint.textContent = 'Voice error: ' + e.error;
+      }
+    };
+    rec.onend = function () {
+      recognizer = null;
+      mic.classList.remove('listening');
+      if (hint.textContent === 'Listening…') hint.textContent = 'Tap and say a channel name';
+    };
+    try {
+      rec.start();
+      recognizer = rec;
+      mic.classList.add('listening');
+      hint.textContent = 'Listening…';
+    } catch (err) {
+      micUnavailable('Microphone unavailable — use keyboard dictation below.');
+    }
+  }
+
+  if (!Recognition) {
+    micUnavailable('This browser has no built-in voice — use keyboard dictation below.');
+  } else if (!window.isSecureContext) {
+    // Chrome/Safari only allow the microphone on https pages; keyboard dictation still works.
+    micUnavailable('Mic button needs HTTPS — use keyboard dictation below.');
+  } else {
+    mic.onclick = startListening;
+  }
+
+  $('form').onsubmit = function (e) {
+    e.preventDefault();
+    send(input.value);
+    input.blur();
+  };
+  Array.prototype.forEach.call(document.querySelectorAll('[data-cmd]'), function (b) {
+    b.onclick = function () { send(b.getAttribute('data-cmd')); };
+  });
+
+  function refreshTv() {
+    api('/api/status').then(function (s) { setTv(s.tvOnline); }, function () {
+      tvPill.className = 'pill off';
+      tvPill.lastChild.textContent = 'Mac server offline';
+    });
+  }
+  refreshTv();
+  setInterval(refreshTv, 5000);
+  renderRecent();
+})();
+</script>
+</body>
+</html>

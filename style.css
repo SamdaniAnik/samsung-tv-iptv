@@ -1034,6 +1034,61 @@ body.tv-device .channel-card {
   transform: translateX(-50%) translateY(0);
 }
 
+/* VOLUME INDICATOR */
+#vol-popup {
+  position: fixed;
+  top: 48px;
+  right: 56px;
+  z-index: 10002;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 380px;
+  padding: 16px 26px;
+  border-radius: 40px;
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(0, 229, 255, 0.5);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+  color: var(--text-main);
+  opacity: 0;
+  transform: translateY(-16px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  pointer-events: none;
+}
+#vol-popup.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+#vol-icon {
+  font-size: 28px;
+  width: 34px;
+  text-align: center;
+}
+.vol-track {
+  flex: 1;
+  height: 10px;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.15);
+  overflow: hidden;
+}
+#vol-fill {
+  height: 100%;
+  width: 0;
+  border-radius: 5px;
+  background: var(--accent-cyan);
+  transition: width 0.12s ease;
+}
+#vol-popup.muted #vol-fill {
+  background: var(--text-muted);
+}
+#vol-level {
+  min-width: 44px;
+  text-align: right;
+  font-size: 24px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
 /* The fallback web player must never take remote focus (keys would stop reaching the app). */
 body.tv-device .stream-iframe-fallback {
   pointer-events: none;

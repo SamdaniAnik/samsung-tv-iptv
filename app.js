@@ -10,10 +10,9 @@
 
   var STORAGE_KEYS = {
     favorites: 'iptv.favorites',
-    lastChannel: 'iptv.lastChannel',
-    lastCategory: 'iptv.lastCategory',
-    channelCache: 'iptv.channelCache',
-    channelNumbers: 'iptv.channelNumbers',
+    // v2: channel ids changed with the move to the 10.99.99.99 server, so numbers start fresh.
+    channelCache: 'iptv.channelCache.v2',
+    channelNumbers: 'iptv.channelNumbers.v2',
     serverUrl: 'iptv.serverUrl'
   };
 
@@ -32,7 +31,7 @@
     } catch (err) {}
   }
 
-  var SERVER_URL = String(readStorage(STORAGE_KEYS.serverUrl, null) || CONFIG.serverUrl || 'http://172.20.5.50').replace(/\/+$/, '');
+  var SERVER_URL = String(readStorage(STORAGE_KEYS.serverUrl, null) || CONFIG.serverUrl || 'http://10.99.99.99').replace(/\/+$/, '');
 
   // Application State
   var state = {
@@ -45,7 +44,6 @@
     favorites: [],
     channelsSignature: '',
     uiReady: false,
-    resumeAttempted: false,
     isPlaying: false,
     isPaused: false,
     playbackError: false,
@@ -85,8 +83,57 @@
     PREV_CH: 10190,
     KEY_F: 70,
     KEY_P: 80,
-    KEY_V: 86
+    KEY_V: 86,
+    MUTE: 449
   };
+
+  // Volume indicator: the TV's own volume bar is hidden behind the app, so show the level ourselves.
+  var VOLUME_POPUP_MS = 2500;
+  var volumeTimer = null;
+
+  function getAudioControl() {
+    var ac = window.tizen && tizen.tvaudiocontrol;
+    return ac && typeof ac.getVolume === 'function' ? ac : null;
+  }
+
+  function showVolume(level, muted) {
+    var popup = document.getElementById('vol-popup');
+    if (!popup) return;
+    level = Math.max(0, Math.min(100, Number(level) || 0));
+    popup.classList.toggle('muted', !!muted);
+    document.getElementById('vol-icon').textContent = muted || level === 0 ? '🔇' : level < 35 ? '🔈' : level < 70 ? '🔉' : '🔊';
+    document.getElementById('vol-fill').style.width = (muted ? 0 : level) + '%';
+    document.getElementById('vol-level').textContent = muted ? 'Mute' : String(level);
+    popup.classList.add('show');
+    clearTimeout(volumeTimer);
+    volumeTimer = setTimeout(function () { popup.classList.remove('show'); }, VOLUME_POPUP_MS);
+  }
+
+  function setupVolumeDisplay() {
+    var ac = getAudioControl();
+    if (!ac) return;
+    try {
+      ac.setVolumeChangeListener(function (level) {
+        var muted = false;
+        try { muted = ac.isMute(); } catch (err) {}
+        showVolume(level, muted);
+      });
+    } catch (err) {
+      console.warn('Volume change listener unavailable', err);
+    }
+  }
+
+  function toggleMute() {
+    var ac = getAudioControl();
+    if (!ac) return;
+    try {
+      var muted = !ac.isMute();
+      ac.setMute(muted);
+      showVolume(ac.getVolume(), muted);
+    } catch (err) {
+      console.warn('Mute toggle failed', err);
+    }
+  }
 
   function isBackKey(code) {
     return code === TV_KEYS.RETURN || code === TV_KEYS.ESCAPE || code === TV_KEYS.BACKSPACE;
@@ -99,15 +146,6 @@
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&#39;');
-  }
-
-  function decodeEntities(value) {
-    return String(value || '')
-      .replace(/&quot;/g, '"')
-      .replace(/&#0?39;|&apos;/g, "'")
-      .replace(/&lt;/g, '<')
-      .replace(/&gt;/g, '>')
-      .replace(/&amp;/g, '&');
   }
 
   function padNumber(num) {
@@ -146,13 +184,14 @@
   var hlsInstance = null;
   var isTizenApp = !!(window.tizen && tizen.application);
 
-  // Register Tizen TV Remote Keys (volume keys stay with the TV so its own volume OSD and mute work)
+  // Register Tizen TV Remote Keys. Volume up/down stay with the TV (so they keep controlling the real
+  // output); the app only displays the level. Mute is taken over because the TV reports no mute event.
   function registerTizenKeys() {
     if (window.tizen && tizen.tvinputdevice) {
       var keys = [
         'MediaPlay', 'MediaPause', 'MediaPlayPause', 'MediaStop',
         'ChannelUp', 'ChannelDown', 'PreviousChannel',
-        'ColorF0Red', 'ColorF1Green', 'ColorF3Blue',
+        'ColorF0Red', 'ColorF1Green', 'ColorF3Blue', 'VolumeMute',
         '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'
       ];
       keys.forEach(function (keyName) {
@@ -208,34 +247,34 @@
     });
   }
 
-  // Stream URL lookup (cached so a channel switch doesn't re-scrape the player page; retries always refetch)
-  var M3U8_CACHE_TTL_MS = 5 * 60 * 1000;
-  var m3u8Cache = {};
+  // Stream URLs come signed in /api/channels and expire (~3 h), so they are kept per channel with a
+  // timestamp and the whole list is refetched when one is too old or a retry needs a fresh token.
+  var STREAM_URL_TTL_MS = 60 * 60 * 1000;
+  var streamUrls = {}; // id -> { url, at }
 
-  function parseM3u8FromPlayerHtml(html) {
-    if (!html) return null;
-    var m = html.match(/primarySource\s*=\s*'([^']+)'/);
-    return m ? m[1] : null;
+  function rememberStreamUrls(list, at) {
+    (list || []).forEach(function (raw) {
+      if (raw && raw.id !== undefined && raw.url) streamUrls[String(raw.id)] = { url: raw.url, at: at };
+    });
   }
 
   function resolveM3u8Url(channel, fresh) {
     var key = String(channel.id);
-    var cached = m3u8Cache[key];
-    if (!fresh && cached && Date.now() - cached.at < M3U8_CACHE_TTL_MS) {
-      return Promise.resolve(cached.url);
+    var known = streamUrls[key];
+    if (!fresh && known && Date.now() - known.at < STREAM_URL_TTL_MS) {
+      return Promise.resolve(known.url);
     }
-    delete m3u8Cache[key];
-    var request = canUseApiProxy()
-      ? fetchWithTimeout('api.php?action=stream&id=' + encodeURIComponent(channel.id), null, 5000)
-          .then(function (res) { return res.json(); })
-          .then(function (data) { return data && data.m3u8 ? data.m3u8 : null; })
-      : fetchWithTimeout(channel.playerUrl, { cache: 'no-store' }, 5000)
-          .then(function (res) { return res.text(); })
-          .then(parseM3u8FromPlayerHtml);
-    return request.then(function (url) {
-      if (url) m3u8Cache[key] = { url: url, at: Date.now() };
-      return url;
-    }).catch(function () { return null; });
+    return fetchRemoteChannels().then(function (list) {
+      if (list && list.length) {
+        rememberStreamUrls(list, Date.now());
+        writeStorage(STORAGE_KEYS.channelCache, { savedAt: Date.now(), channels: list });
+      }
+      var entry = streamUrls[key];
+      return entry ? entry.url : null;
+    }).catch(function () {
+      // Server list unreachable: an older token is still worth a try.
+      return known ? known.url : null;
+    });
   }
 
   // Playback engine: Samsung AVPlay on the TV, hls.js / native <video> elsewhere, server web player as last resort.
@@ -377,13 +416,15 @@
 
     resolveM3u8Url(channel, !!isRetry).then(function (m3u8) {
       if (token !== playback.token) return;
-      if (!m3u8) {
+      if (m3u8) {
+        if (!playback.avplayFailed && playWithAvplay(m3u8, token)) return;
+        if (playM3u8InVideo(m3u8, token)) return;
+      }
+      if (channel.playerUrl) {
         playIframeFallback(channel, token);
         return;
       }
-      if (!playback.avplayFailed && playWithAvplay(m3u8, token)) return;
-      if (playM3u8InVideo(m3u8, token)) return;
-      playIframeFallback(channel, token);
+      handlePlaybackFailure(token, m3u8 ? 'No player for this stream' : 'No stream URL');
     });
   }
 
@@ -578,13 +619,17 @@
   // ---------- Channel list ----------
 
   var FAVORITES = 'Favorites';
-  var CATEGORY_ORDER = ['Bangla', 'News', 'Sports', 'English', 'Hindi', 'Kids', 'Islamic'];
+  var MAIN_CATEGORY = CONFIG.defaultCategory || 'Bangla & News';
+  var CATEGORY_ORDER = ['Sports', 'Movies', 'Entertainment', 'Documentary', 'Kids', 'Music', 'Religious'];
   var NAME_FIXES = CONFIG.nameFixes || {};
-  var NEWS_CHANNELS = (CONFIG.newsChannels || []).map(function (n) { return n.toUpperCase(); });
+  var CATEGORY_MERGE = CONFIG.categoryMerge || {};
 
   function encodeUrlPath(url) {
-    // Server logo file names contain spaces; encode them without double-encoding existing escapes.
-    return String(url || '').replace(/ /g, '%20');
+    // Server logos are site-relative (/channel_logo/X.png) and may contain spaces; make them absolute
+    // and encode spaces without double-encoding existing escapes.
+    var s = String(url || '');
+    if (s && !/^https?:\/\//.test(s)) s = SERVER_URL + '/' + s.replace(/^\/+/, '');
+    return s.replace(/ /g, '%20');
   }
 
   // Channel numbers are tied to the stream id, so a new channel on the server never shifts existing numbers.
@@ -618,7 +663,7 @@
       var name = String(raw.name || ('Channel ' + id)).trim();
       if (NAME_FIXES[name]) name = NAME_FIXES[name];
       var category = raw.category || 'General';
-      if (NEWS_CHANNELS.indexOf(name.toUpperCase()) !== -1) category = 'News';
+      if (CATEGORY_MERGE[category]) category = CATEGORY_MERGE[category];
       var number = numberMap[id];
       if (!number) {
         number = ++maxNumber;
@@ -633,7 +678,7 @@
         name: name,
         category: category,
         logo: encodeUrlPath(raw.logo),
-        playerUrl: raw.playerUrl || (SERVER_URL + '/player.php?stream=' + id)
+        playerUrl: raw.playerUrl || null
       });
     });
 
@@ -648,41 +693,15 @@
     }).join('\n');
   }
 
-  function parseChannelsHtml(html) {
-    var marker = html.indexOf('id="vidlink"');
-    var part = marker === -1 ? html : html.slice(marker);
-    var re = /<li class="([^"]+)">\s*<a[^>]*stream=(\d+)[^>]*>([\s\S]*?)<\/li>/g;
-    var channels = [];
-    var m;
-    while ((m = re.exec(part)) !== null) {
-      var classes = m[1].split(/\s+/).filter(function (c) {
-        return c && ['All', 'channel', 'nav-item'].indexOf(c) === -1;
-      });
-      var img = /src="([^"]+)"/.exec(m[3]);
-      var alt = /alt="([^"]*)"/.exec(m[3]);
-      var src = img ? decodeEntities(img[1]) : '';
-      var name = alt && alt[1].trim() ? decodeEntities(alt[1].trim()) : 'Channel ' + m[2];
-      channels.push({
-        id: m[2],
-        name: name,
-        category: classes[0] || 'General',
-        logo: /^https?:\/\//.test(src) ? src : SERVER_URL + '/' + src.replace(/^\/+/, ''),
-        playerUrl: SERVER_URL + '/player.php?stream=' + m[2]
-      });
-    }
-    return channels;
-  }
-
+  // The TV app reads the server API directly; browsers go through api.php (the server sends no CORS headers).
   function fetchRemoteChannels() {
-    if (canUseApiProxy()) {
-      return fetchWithTimeout('api.php?action=channels', null, 6000)
-        .then(function (res) { return res.json(); })
-        .then(function (data) { return Array.isArray(data) ? data : null; });
-    }
-    if (!isTizenApp) return Promise.resolve(null);
-    return fetchWithTimeout(SERVER_URL + '/', { cache: 'no-store' }, 6000)
-      .then(function (res) { return res.text(); })
-      .then(parseChannelsHtml);
+    var url;
+    if (canUseApiProxy()) url = 'api.php?action=channels';
+    else if (isTizenApp) url = SERVER_URL + '/api/channels';
+    else return Promise.resolve(null);
+    return fetchWithTimeout(url, { cache: 'no-store' }, 6000)
+      .then(function (res) { return res.json(); })
+      .then(function (data) { return Array.isArray(data) ? data : null; });
   }
 
   // Show the cached (or bundled) list instantly, then refresh from the server in the background.
@@ -691,10 +710,12 @@
     var initial = cached && Array.isArray(cached.channels) && cached.channels.length
       ? cached.channels
       : (window.CHANNELS_DATA || []);
+    if (cached && cached.savedAt) rememberStreamUrls(cached.channels, cached.savedAt);
     if (initial.length) setChannels(normalizeChannels(initial));
 
     fetchRemoteChannels().then(function (list) {
       if (!list || !list.length) return;
+      rememberStreamUrls(list, Date.now());
       writeStorage(STORAGE_KEYS.channelCache, { savedAt: Date.now(), channels: list });
       var fresh = normalizeChannels(list);
       if (channelsSignature(fresh) !== state.channelsSignature) {
@@ -709,7 +730,8 @@
   function buildCategories() {
     var present = {};
     state.channels.forEach(function (c) { present[c.category] = true; });
-    var cats = [FAVORITES, 'All'];
+    // The main category always comes first, then Favorites and All.
+    var cats = present[MAIN_CATEGORY] ? [MAIN_CATEGORY, FAVORITES, 'All'] : [FAVORITES, 'All'];
     CATEGORY_ORDER.forEach(function (c) {
       if (present[c]) cats.push(c);
     });
@@ -736,13 +758,13 @@
     if (DOM.channelCount) DOM.channelCount.textContent = channels.length + ' Channels';
 
     if (!state.uiReady) {
-      var savedCat = readStorage(STORAGE_KEYS.lastCategory, null);
-      if (savedCat && state.categories.indexOf(savedCat) !== -1) state.activeCategory = savedCat;
+      // Always open on the main category with its first channel focused (no auto-resume of the last channel).
+      state.activeCategory = MAIN_CATEGORY;
       if (state.categories.indexOf(state.activeCategory) === -1) state.activeCategory = 'All';
       state.uiReady = true;
       renderCategories();
       filterCategory(state.activeCategory);
-      resumeLastChannel();
+      playRequestedChannel();
       return;
     }
 
@@ -885,19 +907,6 @@
     playChannel(channel);
   }
 
-  function resumeLastChannel() {
-    if (state.resumeAttempted) return;
-    state.resumeAttempted = true;
-    var launched = takeLaunchChannel();
-    if (launched) {
-      showAndPlay(launched);
-      return;
-    }
-    // Resume inside the remembered category so CH+/− keeps the same channel list as last time.
-    var channel = findChannelById(readStorage(STORAGE_KEYS.lastChannel, null));
-    if (channel) playChannel(channel);
-  }
-
   function playRequestedChannel() {
     var channel = takeLaunchChannel();
     if (!channel) return false;
@@ -926,7 +935,6 @@
 
   function filterCategory(cat) {
     state.activeCategory = cat;
-    writeStorage(STORAGE_KEYS.lastCategory, cat);
     state.catFocusIndex = Math.max(0, state.categories.indexOf(cat));
 
     var tabs = DOM.catBar.querySelectorAll('.cat-tab');
@@ -1057,7 +1065,6 @@
     state.currentChannel = channel;
     state.isPlaying = true;
     state.currentZone = 'PLAYER';
-    writeStorage(STORAGE_KEYS.lastChannel, channel.id);
 
     DOM.osdChNum.textContent = 'CH ' + padNumber(channel.number);
     if (DOM.osdChLogo) {
@@ -1352,8 +1359,14 @@
       });
   }
 
+  // Spoken spellings that speech recognition produces for channel names (config.js → voiceAliases).
+  var VOICE_ALIASES = CONFIG.voiceAliases || {};
+
   function normalizeVoiceText(text) {
     var cleaned = String(text || '').toLowerCase().replace(/[^a-z0-9\s]/g, ' ').replace(/\s+/g, ' ').trim();
+    cleaned = cleaned.replace(/\b[a-z]+\b/g, function (word) {
+      return Object.prototype.hasOwnProperty.call(VOICE_ALIASES, word) ? VOICE_ALIASES[word] : word;
+    });
     return numberWordsToDigits(cleaned);
   }
 
@@ -1376,7 +1389,12 @@
 
   function findCategoryByVoice(text) {
     var spoken = text.replace(/\s+channels?$/, '').replace(/^favourites?$|^favorite$/, 'favorites');
-    return state.categories.find(function (c) { return c.toLowerCase() === spoken; }) || null;
+    var found = state.categories.find(function (c) { return normalizeVoiceText(c) === spoken; });
+    if (found) return found;
+    // A merged server category ("bangla", "news") opens the tab it was merged into.
+    var mergedKey = Object.keys(CATEGORY_MERGE).find(function (k) { return normalizeVoiceText(k) === spoken; });
+    var merged = mergedKey && CATEGORY_MERGE[mergedKey];
+    return merged && state.categories.indexOf(merged) !== -1 ? merged : null;
   }
 
   function showCategoryByVoice(cat) {
@@ -1429,12 +1447,12 @@
 
     // "Channel 24" is also a channel name, so only "number 24" or a bare number always dials.
     if ((match = cmd.match(/^(?:channel\s+)?number\s+(\d+)$|^(\d+)$/))) return playChannelNumber(parseInt(match[1] || match[2], 10));
+    // Categories first, on the full words: "bangla" opens the tab, "bangla tv" still plays BANGLA TV HD.
+    var cat = findCategoryByVoice(cmd);
+    if (cat) { showCategoryByVoice(cat); return true; }
     var exact = findChannelByName(cmd, true);
     if (exact) { playChannel(exact); return true; }
     if ((match = cmd.match(/^channel\s+(\d+)$/))) return playChannelNumber(parseInt(match[1], 10));
-
-    var cat = findCategoryByVoice(cmd);
-    if (cat) { showCategoryByVoice(cat); return true; }
 
     var partial = findChannelByName(cmd, false);
     if (partial) { playChannel(partial); return true; }
@@ -1561,6 +1579,69 @@
     }
   }
 
+  // Phone voice remote: the phone page (voice-remote/ on the Mac) does the speech recognition and
+  // queues the text on the relay; the TV polls the relay, runs each command and reports the outcome.
+  var VOICE_RELAY_URL = String(CONFIG.voiceRelayUrl || '').replace(/\/+$/, '');
+  var VOICE_POLL_MS = 1500;
+  var VOICE_POLL_IDLE_MS = 10000; // relay unreachable (Mac off / server stopped)
+  var voiceRelay = { since: -1, timer: null, busy: false };
+
+  function scheduleVoicePoll(delay) {
+    clearTimeout(voiceRelay.timer);
+    voiceRelay.timer = setTimeout(pollVoiceRelay, delay);
+  }
+
+  function voiceResultMessage(ok, text) {
+    if (!ok) return 'No channel found for "' + text + '"';
+    if (state.isPlaying && state.currentChannel) {
+      return 'Playing ' + state.currentChannel.number + ' · ' + state.currentChannel.name;
+    }
+    return 'Showing ' + state.activeCategory;
+  }
+
+  function reportVoiceResult(id, ok, message) {
+    try {
+      fetchWithTimeout(VOICE_RELAY_URL + '/api/result', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: id, ok: ok, message: message })
+      }, 4000).catch(function () {});
+    } catch (err) {}
+  }
+
+  function pollVoiceRelay() {
+    if (voiceRelay.busy) return;
+    if (document.hidden || !state.uiReady) {
+      scheduleVoicePoll(VOICE_POLL_MS);
+      return;
+    }
+    voiceRelay.busy = true;
+    fetchWithTimeout(VOICE_RELAY_URL + '/api/commands?since=' + voiceRelay.since, { cache: 'no-store' }, 4000)
+      .then(function (res) { return res.json(); })
+      .then(function (data) {
+        voiceRelay.busy = false;
+        var first = voiceRelay.since === -1;
+        if (data && typeof data.last === 'number') voiceRelay.since = data.last;
+        // Commands queued before the app started are stale; only act on new ones.
+        if (!first && data && Array.isArray(data.commands)) {
+          data.commands.forEach(function (cmd) {
+            var texts = [cmd.text].concat(cmd.alternatives || []);
+            var ok = handleVoiceText(texts);
+            reportVoiceResult(cmd.id, ok, voiceResultMessage(ok, cmd.text));
+          });
+        }
+        scheduleVoicePoll(VOICE_POLL_MS);
+      }, function () {
+        voiceRelay.busy = false;
+        scheduleVoicePoll(VOICE_POLL_IDLE_MS);
+      });
+  }
+
+  function setupVoiceRelay() {
+    if (!VOICE_RELAY_URL) return;
+    scheduleVoicePoll(500);
+  }
+
   function toggleSpeechListening() {
     var Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!Recognition) {
@@ -1626,6 +1707,11 @@
 
     if ([TV_KEYS.UP, TV_KEYS.DOWN, TV_KEYS.LEFT, TV_KEYS.RIGHT, TV_KEYS.BACKSPACE].indexOf(code) !== -1) {
       e.preventDefault();
+    }
+
+    if (code === TV_KEYS.MUTE) {
+      toggleMute();
+      return;
     }
 
     if (state.currentZone === 'EXIT_DIALOG') {
@@ -1777,6 +1863,7 @@
       DOM.brandSubtitle.textContent = 'Live BDIX Channels • ' + SERVER_URL.replace(/^https?:\/\//, '');
     }
     registerTizenKeys();
+    setupVolumeDisplay();
     var savedFavorites = readStorage(STORAGE_KEYS.favorites, []);
     state.favorites = Array.isArray(savedFavorites) ? savedFavorites.map(String) : [];
     document.addEventListener('keydown', handleKeyDown);
@@ -1801,6 +1888,7 @@
     bindVideoHealthEvents();
     loadChannels();
     setupBixbyVoice();
+    setupVoiceRelay();
   });
 
 })();

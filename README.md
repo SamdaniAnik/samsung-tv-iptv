@@ -1,22 +1,21 @@
-# Samsung Smart TV IPTV Application (172.20.5.50)
+# Samsung Smart TV IPTV Application (10.99.99.99)
 
-A high-performance IPTV web application designed specifically for **Samsung Smart TV (Tizen OS)** to watch live TV channels from `http://172.20.5.50/`.
+A high-performance IPTV web application designed specifically for **Samsung Smart TV (Tizen OS)** to watch live TV channels from `http://10.99.99.99/`.
 
 ---
 
 ## 🌟 Features
 
-- **Live channel list**: the app shows its saved list instantly, then refreshes from the IPTV server in the background (no reinstall needed when channels change). The bundled `channels.js` (92 channels) is the offline fallback.
-  - 🇧🇩 **Bangla**: ATN Bangla, Channel i, Maasranga, Nagorik, Duranta, etc.
-  - 📰 **News**: Somoy TV, Jamuna TV, Channel 24, ATN News, Independent TV, BBC News, Al Jazeera, Geo News.
-  - 🏏 **Sports (18 Channels)**: A Sports HD, T Sports, Sony Sports Ten 1/2/3/5, Star Sports 1/2/Hindi/Select, Eurosport, etc.
-  - 🎬 **English (27 Channels)**: HBO, WB, Star Movies, AXN, Animal Planet, Discovery, BBC News, Al Jazeera, etc.
-  - 🇮🇳 **Hindi (16 Channels)**: Zee Cinema, Sony Max, Star Gold, Colors, &Pictures, Star Plus, etc.
-  - 👶 **Kids (10 Channels)**: Cartoon Network, Nickelodeon, Disney Channel, Bal Bharat, etc.
-  - 🕌 **Islamic (2 Channels)**: Peace TV Bangla, Madani TV.
+- **Live channel list**: the app shows its saved list instantly, then refreshes from the IPTV server's `/api/channels` in the background (no reinstall needed when channels change). The bundled `channels.js` (99 channels) is the offline fallback.
+  - 🇧🇩📰 **Bangla & News (30)** — first tab, and the app always opens here: Jamuna, NTV, Somoy, Channel 24, Ekattor, ATN Bangla, Channel i, Star Jalsha, DBC, BBC News, Al Jazeera, DW, etc.
+  - 🏏 **Sports (15)**: T Sports, A Sports, Star Sports 1/2/3/Select, Sony Sports 1–5, PTV Sports, Eurosport, etc.
+  - 🎬 **Movies (15)** and 📺 **Entertainment (14)**: Star Movies, Sony Max, Zee Cinema, Star Gold, Star Plus, Colors, AXN, etc.
+  - 🌍 **Documentary (11)**: Discovery, Nat Geo, Animal Planet, History TV18, BBC Earth, TLC, etc.
+  - 👶 **Kids (10)**, 🎵 **Music (2)**, 🕌 **Religious (2)**.
+- **Signed stream URLs**: each channel's `.m3u8` URL carries a session token that expires (~3 h); the app refreshes the list for a new token when a URL is old or a stream fails.
 - **Stable channel numbers**: a channel keeps its number even when the server adds or removes channels.
 - **Native Samsung Playback**: Streams play through Samsung's hardware AVPlay player on the TV (hls.js in browsers), with a loading screen, buffering indicator, automatic reconnect, and a "Channel unavailable" screen when a stream is down.
-- **Favorites & Resume**: Star channels into a ★ Favorites tab, and the app reopens on the last channel you watched (both saved on the TV).
+- **Favorites**: Star channels into a ★ Favorites tab (saved on the TV). The app always starts on the Bangla & News tab with its first channel focused.
 - **10-Foot Leanback TV UI**: Designed for living room TV screens (1080p / 4K) with glowing D-Pad focus navigation.
 - **Full TV Remote Control Support**:
   - D-Pad navigation (`▲`, `▼`, `◀`, `▶`, `OK`).
@@ -94,17 +93,35 @@ If you want the app installed on your Samsung TV app drawer alongside Netflix an
 
 ---
 
+## 🎤 Phone Voice Remote
+
+This TV (Tizen 5.5, 2020) has no voice API for apps, so voice works through your phone:
+
+1. On the Mac: `./voice-remote/start.sh` (starts a small relay on port 8765; `./voice-remote/start.sh stop` stops it).
+2. On your phone (same Wi-Fi): open `http://<mac-ip>:8765/` — e.g. `http://192.168.0.175:8765/` — and add it to the home screen.
+3. Tap the 🎤 and speak, or tap the text box and use the phone keyboard's 🎤 dictation (the big mic button needs HTTPS in most phone browsers; keyboard dictation always works).
+
+The TV app polls the relay set in `js/config.js` → `voiceRelayUrl` and replies with what it did (shown on the phone).
+If the Mac's IP changes, update `voiceRelayUrl` and reinstall — or reserve the Mac's IP in the router.
+
+Things you can say: a channel name (“Somoy TV”, “Jamuna”, “T Sports”), “channel 12” / “number 5”, “next channel”, “previous channel”,
+a category (“Bangla”, “News”, “Sports”, “Movies”, “Kids”, “Favorites”), “add to favorites”, “pause”, “play”, “stop”.
+Misheard spellings can be mapped in `js/config.js` → `voiceAliases`.
+
+---
+
 ## 📁 Project Structure
 
 - `js/config.js`: Server URL, default category, channel name fixes and News channel list.
 - `index.html`: Main TV application layout & player viewport.
 - `app.js`: Tizen remote control event listener & navigation engine.
 - `style.css`: 10-foot TV UI stylesheet with spatial focus animations.
-- `channels.js`: Full 92 channels list extracted from `http://172.20.5.50/`.
-- `api.php`: Dynamic IPTV sync and stream token extractor.
+- `channels.js`: Full 92 channels list extracted from `http://10.99.99.99/`.
+- `api.php`: Browser-only relay for `/api/channels` (the IPTV server sends no CORS headers).
 - `config.xml`: Official Tizen Web Application manifest.
 - `icon.png`: App launcher icon (512x512).
 - `js/hls.js`: hls.js 1.5.20 (HLS playback in desktop browsers; the TV uses Samsung AVPlay).
+- `voice-remote/`: Phone voice remote page + relay (`router.php`, run by `start.sh`; not packaged into the .wgt).
 - `package_wgt.sh`: Builds the signed `SamsungSmartIPTV.wgt` from the app files only (build output is git-ignored).
 
 Requires Tizen 3.0 or newer (2017+ Samsung TVs).
